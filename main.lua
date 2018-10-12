@@ -1,24 +1,5 @@
-
-
-
-
 --TODO Add the rest of the neurons types
 --TODO Update note
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 require "saveTable"
 require "extendedMath"

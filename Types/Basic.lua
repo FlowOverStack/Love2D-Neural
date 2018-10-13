@@ -60,7 +60,7 @@ function Basic:draw(drawValue)
 	if drawValue then
 		love.graphics.setColor(1, 1, 1)
 		love.graphics.printf(string.format("%.2f",self.value), math.modf(self.x)-16, math.modf(self.y)-8, 32, "center")
-	end
+	end	
 end
 
 function Basic:update(dt)

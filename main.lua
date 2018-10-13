@@ -1,6 +1,3 @@
---TODO Add the rest of the neurons types
---TODO Update note
-
 setmetatable(_G, {__newindex = function (t, k, v)
    rawset(t, k, v)
    print(([[Created global "%s" with value "%s"]]):format(k, v))
@@ -13,6 +10,7 @@ require "extendedMath"
 require "Neuron"
 require "Note"
 
+--TODO Redo this file
 
 Neuron:create()
 Neuron:addCellType("Basic")
@@ -283,13 +281,12 @@ function love.draw()
 		if math.isInsideRadius(love.mouse.getScaledX()+Neuron.camera.x, love.mouse.getScaledY()+Neuron.camera.y, cell.x, cell.y, 16) then
 			
 			if isSeeAxonsEnabled then
-				love.graphics.setColor(1,0, 0)
-				Neuron:showAxons(cellPosition)
+				Neuron:showAxons(cell, 5)
 			end
 			
 			if isSeeDendritesEnabled then
 				love.graphics.setColor(0, 1, 0)
-				Neuron:showDendrites(cellPosition)
+				Neuron:showDendrites(cell, 5)
 			end
 			
 			if not drawValues then
@@ -377,8 +374,8 @@ function love.mousepressed(x, y, button)
 					selectedCell = cellPosition
 					return true
 				else
-					Neuron:connect(selectedCell, cellPosition) 
-					selectedCell=0
+					Neuron:connect(Neuron.cells[selectedCell], Neuron.cells[cellPosition]) 
+					selectedCell = 0
 					return true
 				end
 			end
@@ -389,7 +386,7 @@ function love.mousepressed(x, y, button)
 	elseif button == 3 then 
 		for cellPosition, cell in ipairs(Neuron.cells) do
 			if math.isInsideRadius(offsetX, offsetY, cell.x, cell.y, 16) then --The snapping is not used
-				Neuron:deleteNeuron(cellPosition)
+				Neuron:deleteNeuron(cell)
 				if cellPosition == selectedCell then
 					selectedCell = 0
 					break

@@ -1,6 +1,3 @@
---TODO Add the rest of the neurons types
---TODO Update note
-
 setmetatable(_G, {__newindex = function (t, k, v)
    rawset(t, k, v)
    print(([[Created global "%s" with value "%s"]]):format(k, v))

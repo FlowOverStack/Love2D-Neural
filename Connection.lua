@@ -23,8 +23,8 @@ function Connection:getStrength()
 	return self.strength
 end
 
-function Connection:getCell()
-	return self.cell
+function Connection:getConnectedTo()
+	return self.connectedTo
 end
 
 return Connection

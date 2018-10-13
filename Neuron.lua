@@ -1,4 +1,6 @@
-Neuron= {
+local Connection = require "Connection"
+
+Neuron = {
 	types = {},
 	updateOrder = {},
 	camera = require "Camera"
@@ -11,12 +13,8 @@ Neuron.camera:start()
 
 --Hyperbolic Tangent as Sigmoid Function
 function Neuron.tanh(value, target, factor, tnh)
-	--tnh == math.tanh, perfomance related
 	return value + tnh(target - value) * factor
 end
-
-
-
 
 
 

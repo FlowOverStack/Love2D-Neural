@@ -10,6 +10,7 @@ require "extendedMath"
 require "Neuron"
 require "Note"
 
+--TODO Redo this file
 
 Neuron:create()
 Neuron:addCellType("Basic")
@@ -280,13 +281,12 @@ function love.draw()
 		if math.isInsideRadius(love.mouse.getScaledX()+Neuron.camera.x, love.mouse.getScaledY()+Neuron.camera.y, cell.x, cell.y, 16) then
 			
 			if isSeeAxonsEnabled then
-				love.graphics.setColor(1,0, 0)
-				Neuron:showAxons(cell)
+				Neuron:showAxons(cell, 5)
 			end
 			
 			if isSeeDendritesEnabled then
 				love.graphics.setColor(0, 1, 0)
-				Neuron:showDendrites(cell)
+				Neuron:showDendrites(cell, 5)
 			end
 			
 			if not drawValues then

@@ -9,16 +9,11 @@ Neuron = {
 Neuron.camera:start()
 
 
-
-
 --Hyperbolic Tangent as Sigmoid Function
 function Neuron.tanh(value, target, factor, tnh)
 	return value + math.tanh(target - value) * factor
 end
 
-
-
---Create Table with Neurons
 function Neuron:create()
 	self.cells = {}
 	self.channels = {}
@@ -39,9 +34,23 @@ function Neuron:createCell(x, y, cellType)
 	end
 end
 
---Broken
 function Neuron:clearConnections(cell)
-	--TODO
+	for i, v in ipairs(cell.axons) do
+		for j, w in ipairs(v.connectedTo.dendrites) do
+			if w.connectedTo == cell then
+				table.remove(v.connectedTo.dendrites, j)
+			end
+		end
+	end
+	
+	for i, v in ipairs(cell.dendrites) do
+		for j, w in ipairs(v.connectedTo.axons) do
+			if w.connectedTo == cell then
+				table.remove(v.connectedTo.axons, j)
+			end
+		end
+	end
+	
 	self:doOrderUpdate()
 end
 
@@ -101,12 +110,32 @@ function Neuron:connect(emitter, receiver)
 end
 
 --Drawing Functions
-function Neuron:showAxons(cell, isFirst)
-	--TODO
+function Neuron:showAxons(cell, depth, fullDepth)
+	if not fullDepth then
+		fullDepth = depth	
+	end
+	
+	if depth > 0 then
+		for i, v in ipairs(cell.axons) do
+			self:showAxons(v.connectedTo, depth-1, fullDepth)
+			love.graphics.setColor(1, 1-(depth/fullDepth), 1-(depth/fullDepth))
+			love.graphics.line(cell.x, cell.y, v.connectedTo.x, v.connectedTo.y)
+		end
+	end
 end
 
-function Neuron:showDendrites(cell, isFirst)
-	--TODO
+function Neuron:showDendrites(cell, depth, fullDepth)
+	if not fullDepth then
+		fullDepth = depth	
+	end
+	
+	if depth > 0 then
+		for i, v in ipairs(cell.dendrites) do
+			self:showDendrites(v.connectedTo, depth-1, fullDepth)
+			love.graphics.setColor(1-(depth/fullDepth), 1, 1-(depth/fullDepth))
+			love.graphics.line(cell.x, cell.y, v.connectedTo.x, v.connectedTo.y)
+		end
+	end
 end
 
 function Neuron:draw(drawValue)
@@ -165,6 +194,8 @@ end
 
 function Neuron:doOrderUpdate()
 	self.updateOrder = {} 
+	
+	--TODO Add loop resolution
 	
 	for cellPosition, cell in ipairs(self.cells) do
 		if #cell.axons == 0 then

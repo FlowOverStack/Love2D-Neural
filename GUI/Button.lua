@@ -28,8 +28,11 @@ end
 function Button:draw()
 	local x, y = self:getPosition()
 	local w, h = self:getDimensions()
+	love.graphics.push()
+	love.graphics.setColor(255, 255, 255)
 	love.graphics.rectangle("line", x, y, w, h)
 	love.graphics.draw(self.textImage, x, y)
+	love.graphics.pop()
 end
 
 function Button:setText(text, font)

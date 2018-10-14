@@ -9,8 +9,7 @@ require "extendedMath"
 local Neuron = require "Neuron"
 local GUI = require "GUI.GUI"
 
-
-GUI:createButton(0, 0, "Create", 100, 100)
+local trainableButton = GUI:createButton(200, 0, "Create", 50, 50)
 --require "Note"
 
 --TODO Redo this file
@@ -355,8 +354,10 @@ function love.mousepressed(x, y, button)
 
 	--Create Cell
 	if button == 1 then
-		leftClickActions[selectedAction].onClick(offsetX, offsetY)
-		selectedCell = 0 --Comment for cellphones
+		if not GUI:mousepressed(x, y, button) then
+			leftClickActions[selectedAction].onClick(offsetX, offsetY)
+			selectedCell = 0
+		end
 	--Create Connection
 	elseif button == 2 then 
 		for cellPosition, cell in ipairs(Neuron.cells) do

@@ -1,21 +1,17 @@
 local Connection = require "Connection"
-
-Neuron = {
+local Neuron = {
 	types = {},
 	updateOrder = {},
 	camera = require "Camera"
 }
 
-Neuron.camera:start()
-
-
---Hyperbolic Tangent as default Sigmoid Function
-function Neuron.tanh(value, target, factor, tnh)
-	return value + math.tanh(target - value) * factor
-end
+-------------------
+--Class functions--
+-------------------
 
 --Start Neuron graph
 function Neuron:new()
+	Neuron.camera:start()
 	self.cells = {}
 	self.channels = {}
 	return self.cells, self.channels
@@ -28,6 +24,19 @@ function Neuron:addCellType(name)
 	package.loaded[name] = nil
 	self.types[name] = t
 end
+
+------------------
+--Math functions--
+------------------
+
+--Hyperbolic Tangent as default Sigmoid Function
+function Neuron.tanh(value, target, factor, tnh)
+	return value + math.tanh(target - value) * factor
+end
+
+-------------------
+--Graph functions--
+-------------------
 
 --Create a cell at graph
 function Neuron:createCell(x, y, cellType)
@@ -75,6 +84,7 @@ function Neuron:deleteNeuron(cell)
 	self:doOrderUpdate()
 end
 
+--Connect neurons
 function Neuron:connect(emitter, receiver)
 	--Check if it makes a loop with the next cell
 	for position, cell in ipairs(emitter.axons) do
@@ -102,7 +112,9 @@ function Neuron:connect(emitter, receiver)
 	self:doOrderUpdate()
 end
 
---Drawing Functions
+-----------------------
+--Graphical Functions--
+-----------------------
 
 --Recursive function, draw connections forward of a cell
 function Neuron:showAxons(cell, depth, fullDepth)
@@ -167,7 +179,9 @@ function Neuron:draw(drawValue)
 	love.graphics.pop()
 end
 
-
+--------------------
+--Update functions--
+--------------------
 
 --Recursive function
 --Do order starting at dendriteless cells and going backwards
@@ -228,7 +242,7 @@ function Neuron:update(dt)
 		cell.sum = 0 
 	end
 	
-	--
+	--With targets already set, change values based on a sigmoid equation
 	for cellPosition, cell in ipairs(self.cells) do
 		if not cell.instantaneous then
 			if cell.equation then
@@ -240,3 +254,5 @@ function Neuron:update(dt)
 		cell.alreadyUpdated = false
 	end
 end
+
+return Neuron

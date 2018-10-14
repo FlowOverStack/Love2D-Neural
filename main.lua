@@ -4,11 +4,14 @@ setmetatable(_G, {__newindex = function (t, k, v)
   end}
 )
 
-require "saveTable"
 require "extendedMath"
 
-require "Neuron"
-require "Note"
+local Neuron = require "Neuron"
+local GUI = require "GUI.GUI"
+
+
+GUI:createButton(0, 0, "Create", 100, 100)
+--require "Note"
 
 --TODO Redo this file
 
@@ -22,7 +25,7 @@ Neuron:addCellType("Digital")
 --Neuron:addCellType("Emitter")
 --Neuron:addCellType("Receiver")
 
-selectedCell = 0
+local selectedCell = 0
 love.window.setTitle("5.3")
 
 local isSeeAxonsEnabled = true
@@ -267,7 +270,7 @@ function love.draw()
 	love.graphics.setCanvas(Canvas)		
 	love.graphics.clear()
 	Neuron:draw(drawValues)
-	Note:draw(800, 600, camera.x, camera.y)
+
 	love.graphics.setCanvas()
 	love.graphics.draw(Canvas, 0, 0)
 	
@@ -305,15 +308,7 @@ function love.draw()
 		love.graphics.line(Neuron.cells[selectedCell].x-Neuron.camera.x, Neuron.cells[selectedCell].y-Neuron.camera.y , love.mouse.getScaledX(), love.mouse.getScaledY())
 	end
 	
-	--Highlight note
-	local x,y = love.mouse.getScaledX(), love.mouse.getScaledY()
-	for position, value in ipairs(Note.notes) do
-		if x>value.x-16-camera.x and x<value.x-camera.x  and
-			y>value.y-camera.y and y<value.y+16-camera.y  then
-			love.graphics.setColor(1, 0.5, 0)
-			love.graphics.rectangle("fill", value.x-16-camera.x, value.y-camera.y, 16, 16)
-		end
-	end
+	GUI:draw()
 end
 
 function love.update(dt)
@@ -336,10 +331,6 @@ function love.update(dt)
 end
 
 function love.keypressed(key)
-
-
-
-
 	if key == "a" then
 		isSeeAxonsEnabled = not isSeeAxonsEnabled
 	elseif key=="s" then

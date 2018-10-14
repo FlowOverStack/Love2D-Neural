@@ -4,6 +4,7 @@ local Connection = {
 }
 
 
+--Create connection
 function Connection:new(cell, strength, o)
 	local o = o or {}
 	
@@ -15,6 +16,9 @@ function Connection:new(cell, strength, o)
 	return o
 end
 
+-----------------------
+--Getters and Setters--
+-----------------------
 function Connection:setStrength(strength)
 	self.strength = strength
 end
@@ -27,4 +31,5 @@ function Connection:getConnectedTo()
 	return self.connectedTo
 end
 
+-----------------
 return Connection

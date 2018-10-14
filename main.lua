@@ -12,7 +12,7 @@ require "Note"
 
 --TODO Redo this file
 
-Neuron:create()
+Neuron:new()
 Neuron:addCellType("Basic")
 Neuron:addCellType("Trainable")
 Neuron:addCellType("Inverse")

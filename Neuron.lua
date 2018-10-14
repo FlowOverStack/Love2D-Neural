@@ -9,23 +9,27 @@ Neuron = {
 Neuron.camera:start()
 
 
---Hyperbolic Tangent as Sigmoid Function
+--Hyperbolic Tangent as default Sigmoid Function
 function Neuron.tanh(value, target, factor, tnh)
 	return value + math.tanh(target - value) * factor
 end
 
-function Neuron:create()
+--Start Neuron graph
+function Neuron:new()
 	self.cells = {}
 	self.channels = {}
 	return self.cells, self.channels
 end
 
+--Require a new cell type by file name
+--(Must be inside /Types)
 function Neuron:addCellType(name)
 	local t = require("types."..name)
 	package.loaded[name] = nil
 	self.types[name] = t
 end
 
+--Create a cell at graph
 function Neuron:createCell(x, y, cellType)
 	--Create basic cell
 	if self.types[cellType] then
@@ -34,7 +38,9 @@ function Neuron:createCell(x, y, cellType)
 	end
 end
 
+--Clear all basic connections of a cell
 function Neuron:clearConnections(cell)
+	--Remove references of cells of axons connections
 	for i, v in ipairs(cell.axons) do
 		for j, w in ipairs(v.connectedTo.dendrites) do
 			if w.connectedTo == cell then
@@ -43,6 +49,7 @@ function Neuron:clearConnections(cell)
 		end
 	end
 	
+	--Remove references of cells of dendrites connections
 	for i, v in ipairs(cell.dendrites) do
 		for j, w in ipairs(v.connectedTo.axons) do
 			if w.connectedTo == cell then
@@ -50,30 +57,18 @@ function Neuron:clearConnections(cell)
 			end
 		end
 	end
-	
+
 	self:doOrderUpdate()
 end
 
+--Delete a neuron of this graph
 function Neuron:deleteNeuron(cell)
-	for i, v in ipairs(cell.axons) do
-		for j, w in ipairs(v.connectedTo.dendrites) do
-			if w.connectedTo == cell then
-				table.remove(v.connectedTo.dendrites, j)
-			end
-		end
-	end
-	
-	for i, v in ipairs(cell.dendrites) do
-		for j, w in ipairs(v.connectedTo.axons) do
-			if w.connectedTo == cell then
-				table.remove(v.connectedTo.axons, j)
-			end
-		end
-	end
+	self:clearConnections(cell)
 	
 	for i, v in ipairs(self.cells) do
 		if v == cell then
 			table.remove(self.cells, i)
+			break
 		end
 	end
 	
@@ -81,20 +76,21 @@ function Neuron:deleteNeuron(cell)
 end
 
 function Neuron:connect(emitter, receiver)
-
-	--Check if it makes a loop with itself
+	--Check if it makes a loop with the next cell
 	for position, cell in ipairs(emitter.axons) do
 		if cell.connectedTo == receiver then
 			return false
 		end
 	end
-
+	
+	--Check if it makes a loop with the next cell
 	for position, cell in ipairs(receiver.dendrites) do
 		if cell.connectedTo == emitter then
 			return false
 		end
 	end
-
+	
+	--Check if it loops with itself
 	if emitter == receiver then
 		return false
 	end
@@ -103,13 +99,12 @@ function Neuron:connect(emitter, receiver)
 	table.insert(emitter.axons, Connection:new(receiver, 1))
 	table.insert(receiver.dendrites, Connection:new(emitter, 1))
 	
-
-
-	--Update order of update	
 	self:doOrderUpdate()
 end
 
 --Drawing Functions
+
+--Recursive function, draw connections forward of a cell
 function Neuron:showAxons(cell, depth, fullDepth)
 	if not fullDepth then
 		fullDepth = depth	
@@ -124,6 +119,7 @@ function Neuron:showAxons(cell, depth, fullDepth)
 	end
 end
 
+--Recursive function, draw connections backwards of a cell
 function Neuron:showDendrites(cell, depth, fullDepth)
 	if not fullDepth then
 		fullDepth = depth	
@@ -173,7 +169,8 @@ end
 
 
 
---Updates
+--Recursive function
+--Do order starting at dendriteless cells and going backwards
 function Neuron:backUpdate(cell)
 	if not cell.alreadyUpdated then
 		if #cell.dendrites == 0 then
@@ -192,6 +189,7 @@ function Neuron:backUpdate(cell)
 	end
 end
 
+--Update order of updates
 function Neuron:doOrderUpdate()
 	self.updateOrder = {} 
 	
@@ -208,12 +206,15 @@ function Neuron:doOrderUpdate()
 	end
 end
 
+--Frame update
 function Neuron:update(dt)
 	for position, cell in ipairs (self.updateOrder) do
+		--Update sum of next cells
 		for t, value in ipairs (cell.axons) do
 			value.connectedTo.sum = value.connectedTo.sum + cell.value
 		end
 		
+		--Call neuron update function
 		if #cell.dendrites == 0 then
 			if not cell.bypassDendrites then
 				cell.target = cell.value
@@ -227,6 +228,7 @@ function Neuron:update(dt)
 		cell.sum = 0 
 	end
 	
+	--
 	for cellPosition, cell in ipairs(self.cells) do
 		if not cell.instantaneous then
 			if cell.equation then

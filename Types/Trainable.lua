@@ -1,3 +1,5 @@
+local Basic = loadfile("Types/Basic.lua")()
+
 local Trainable = Basic:new(0, 0, {
 	--Specific Variables
 	colors = {
@@ -6,6 +8,8 @@ local Trainable = Basic:new(0, 0, {
 		blue = 1
 	}
 })
+
+Basic = nil
 
 --Functions
 function Trainable:new(x, y)

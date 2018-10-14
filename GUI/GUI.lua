@@ -1,4 +1,4 @@
-local Button = require "GUI.Button"
+local Button = loadfile("GUI/Button.lua")()
 
 local GUI = {
 	buttons = {}

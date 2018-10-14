@@ -1,8 +1,8 @@
-local Connection = require "Connection"
+local Connection = loadfile("Connection.lua")()
 local Neuron = {
 	types = {},
 	updateOrder = {},
-	camera = require "Camera"
+	camera = loadfile("Camera.lua")()
 }
 
 -------------------
@@ -126,7 +126,7 @@ function Neuron:showAxons(cell, depth, fullDepth)
 		for i, v in ipairs(cell.axons) do
 			self:showAxons(v.connectedTo, depth-1, fullDepth)
 			love.graphics.setColor(1, 1-(depth/fullDepth), 1-(depth/fullDepth))
-			love.graphics.line(cell.x, cell.y, v.connectedTo.x, v.connectedTo.y)
+			love.graphics.line(cell.x+tx, cell.y+ty, v.connectedTo.x+tx, v.connectedTo.y+ty)
 		end
 	end
 end
@@ -141,7 +141,8 @@ function Neuron:showDendrites(cell, depth, fullDepth)
 		for i, v in ipairs(cell.dendrites) do
 			self:showDendrites(v.connectedTo, depth-1, fullDepth)
 			love.graphics.setColor(1-(depth/fullDepth), 1, 1-(depth/fullDepth))
-			love.graphics.line(cell.x, cell.y, v.connectedTo.x, v.connectedTo.y)
+			local tx, ty = self.camera:getTranslation()
+			love.graphics.line(cell.x+tx, cell.y+ty, v.connectedTo.x+tx, v.connectedTo.y+ty)
 		end
 	end
 end
@@ -168,7 +169,7 @@ function Neuron:draw(drawValue)
 			end
 		end
 	end
-	
+	love.graphics.setColor(1, 1, 1)
 	--Draw Cells
 	for cellPosition, cell in ipairs(self.cells) do
 		--Ensure cell is visible

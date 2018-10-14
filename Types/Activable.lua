@@ -1,3 +1,6 @@
+local Basic = loadfile("Types/Basic.lua")()
+
+
 local Activable = Basic:new(0, 0, {
 		--Specific Variables
 		activation = 0.75,
@@ -10,6 +13,7 @@ local Activable = Basic:new(0, 0, {
 		}
 	})
 	
+Basic = nil
 --Functions
 function Activable:new(x, y)
 	local o = {}

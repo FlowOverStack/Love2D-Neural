@@ -1,3 +1,5 @@
+local Basic = loadfile("Types/Basic.lua")()
+
 local Inverse = Basic:new(0, 0, {
 		--Specific Variables
 		colors = {
@@ -7,6 +9,7 @@ local Inverse = Basic:new(0, 0, {
 		}
 	})
 	
+Basic = nil
 
 --Functions
 function Inverse:new(x, y)

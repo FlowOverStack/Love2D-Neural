@@ -1,3 +1,6 @@
+local Basic = loadfile("Types/Basic.lua")()
+
+
 local Digital = Basic:new(0, 0, {
 		--Specific Variables
 		activation = 0.75,
@@ -9,6 +12,7 @@ local Digital = Basic:new(0, 0, {
 			blue = 0
 		},
 	})
+Basic = nil
 
 --Functions
 function Digital:draw(drawValues, neuronModule)	

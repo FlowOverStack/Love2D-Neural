@@ -1,4 +1,4 @@
-Basic = {
+local Basic = {
 	--Graphical variables
 	x = 100,
 	y = 100,
@@ -61,6 +61,8 @@ function Basic:draw(drawValue)
 		love.graphics.setColor(1, 1, 1)
 		love.graphics.printf(string.format("%.2f",self.value), math.modf(self.x)-16, math.modf(self.y)-8, 32, "center")
 	end	
+	
+	love.graphics.setColor(1, 1, 1)
 end
 
 function Basic:update(dt)
